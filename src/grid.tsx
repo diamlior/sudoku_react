@@ -27,25 +27,66 @@ export default function Grid() {
             grid[i] = 0
         }
         setNumsGrid(grid)
-
     }
+
+    function canNumberBeAdded(i: number, j: number, grid: number[], new_number: number){
+
+        // Iterate over the rows to check if we can add new_number
+        for(let row = 0; row < 9; row++){
+            let index = (row * 9) + j
+            if(grid[index] !== new_number){
+                continue
+            }
+            return false
+        }
+
+        // Iterate over the columns to check if we can add new_number
+        for(let col = 0; col < 9; col++){
+            let index = i + col
+            if(grid[index] !== new_number){
+                continue
+            }
+            return false
+        }
+
+        // Iterate over the 3x3 square to check if we can add new_number
+        const row = Math.floor(i / 3) * 3
+        const col = Math.floor(j / 3)
+        for(let i = 0; i < 3; i++){
+            for(let j = 0; j < 3; j++){
+                let index = (row + i) * 9 + (col * 3) + j
+                if(grid[index] !== new_number){
+                    continue
+                }
+                return false
+            }
+        }
+
+        return true
+}
+
     function fillAnotherOne(i: number, j: number, prev_grid: number[]) {
         if (i == 9) {
-            return
+            return new Promise((resolve, reject) => {resolve(true)})
         }
         var next_j = j + 1
         if (prev_grid[(i * 9) + j] !== 0) {
-            fillAnotherOne(i + Math.floor(next_j/9), next_j % 9, prev_grid)
+            return fillAnotherOne(i + Math.floor(next_j / 9), next_j % 9, prev_grid)
         }
         else {
-            setTimeout(() => {
-                var grid = [...prev_grid]
-                grid[(i * 9) + j] = i + 1
-                setNumsGrid(grid)
-                fillAnotherOne(i + Math.floor(next_j/9), next_j % 9, grid)
-            }, 50)
+            for(let num = 1; num < 10; num++){
+                let val = canNumberBeAdded(i,j,prev_grid, num)
+                console.log("", num, val)
+            }
+            // setTimeout(() => {
+            //     var grid = [...prev_grid]
+            //     grid[(i * 9) + j] = i + 1
+            //     setNumsGrid(grid)
+            //     fillAnotherOne(i + Math.floor(next_j / 9), next_j % 9, grid)
+            // }, 50)
         }
     }
+
     function onSolveHandler() {
         fillAnotherOne(0, 0, numsGrid)
     }
