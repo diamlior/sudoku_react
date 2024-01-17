@@ -32,13 +32,10 @@ export default function GridNode(props: GridNodeProps){
     function submitHandler(e: any){
         const chosenValue = e.target.value
         setTempValue(chosenValue)
-        if (tempValue === '0' || (Number(chosenValue) && Number(chosenValue) >= 0 && Number(chosenValue) <= 9)){
-            props.changeValue(props.row,props.col,chosenValue)
-        }
+        props.changeValue(props.row,props.col,chosenValue)
         setWriteState(false)
     }
 
-    
     return (
         writeState ? 
         <div>
