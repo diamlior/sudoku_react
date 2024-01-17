@@ -30,20 +30,24 @@ export default function GridNode(props: GridNodeProps){
     }
 
     function submitHandler(e: any){
-        if (tempValue === "" || (Number(tempValue) && Number(tempValue) >= 0 && Number(tempValue) <= 9)){
-            props.changeValue(props.row,props.col,tempValue)
+        const chosenValue = e.target.value
+        setTempValue(chosenValue)
+        if (tempValue === '0' || (Number(chosenValue) && Number(chosenValue) >= 0 && Number(chosenValue) <= 9)){
+            props.changeValue(props.row,props.col,chosenValue)
         }
         setWriteState(false)
     }
 
+    
     return (
         writeState ? 
-        <div><textarea
-        className="text_box"
-        value={tempValue}
-        onChange={handleTextareaChange}
-      />
-      <button onClick={submitHandler}>Submit</button></div>
+        <div>
+             <select className="text_box" onChange={submitHandler} onBlur={submitHandler} value={tempValue}>
+             {[...Array(10)].map((xy, j) =>
+                     <option value={j}>{j}</option>)}
+            </select>
+            
+      </div>
          :
         <div className="node" onClick={clickHandler}>{value === undefined || value === "0" ? "." : value}</div>
     )
