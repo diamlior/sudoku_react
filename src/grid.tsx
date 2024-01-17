@@ -42,7 +42,7 @@ export default function Grid() {
 
         // Iterate over the columns to check if we can add new_number
         for(let col = 0; col < 9; col++){
-            let index = i + col
+            let index = (i * 9) + col
             if(grid[index] !== new_number){
                 continue
             }
@@ -65,9 +65,20 @@ export default function Grid() {
         return true
 }
 
-    function fillAnotherOne(i: number, j: number, prev_grid: number[]) {
+    function createPromiseResult(val: boolean){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve(val);
+            });
+          });
+    }
+    function delay (ms: number) {
+        return new Promise((resolve,reject) => setTimeout(resolve,ms));
+    }
+
+    async function fillAnotherOne(i: number, j: number, prev_grid: number[]) {
         if (i == 9) {
-            return new Promise((resolve, reject) => {resolve(true)})
+            createPromiseResult(true)
         }
         var next_j = j + 1
         if (prev_grid[(i * 9) + j] !== 0) {
@@ -75,20 +86,28 @@ export default function Grid() {
         }
         else {
             for(let num = 1; num < 10; num++){
-                let val = canNumberBeAdded(i,j,prev_grid, num)
-                console.log("", num, val)
-            }
-            // setTimeout(() => {
-            //     var grid = [...prev_grid]
-            //     grid[(i * 9) + j] = i + 1
-            //     setNumsGrid(grid)
-            //     fillAnotherOne(i + Math.floor(next_j / 9), next_j % 9, grid)
-            // }, 50)
+                let can_be_added = canNumberBeAdded(i,j,prev_grid, num)
+                if(!can_be_added){
+                    continue
+                }
+                await delay(50);
+                var grid = [...prev_grid]
+                grid[(i * 9) + j] = num
+                setNumsGrid(grid)
+                const res = await fillAnotherOne(i + Math.floor(next_j / 9), next_j % 9, grid)
+                if(res === true){
+                    createPromiseResult(true)
+                }
+           }   
+           return createPromiseResult(false)
         }
     }
 
-    function onSolveHandler() {
-        fillAnotherOne(0, 0, numsGrid)
+
+
+    async function onSolveHandler() {
+        const ans = await fillAnotherOne(0, 0, numsGrid)
+
     }
 
     return (<div>

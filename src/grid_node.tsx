@@ -12,7 +12,6 @@ interface GridNodeProps{
 export default function GridNode(props: GridNodeProps){
     
     const [value, setValue] = useState(props.init_value?.toString())
-    console.log(value)
     const [tempValue, setTempValue] = useState(props.init_value?.toString())
     const [writeState, setWriteState] = useState(false)
     
