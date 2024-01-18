@@ -30,7 +30,7 @@ export default function Grid() {
         setNumsGrid(grid)
     }
 
-    function canNumberBeAdded(i: number, j: number, grid: number[], new_number: number){
+    function canNumberBeAdded(i: number, j: number, grid: number[], new_number: number) : boolean{
         let curr_index = i * 9 + j
 
         // Iterate over the rows to check if we can add new_number
@@ -67,18 +67,18 @@ export default function Grid() {
         return true
 }
 
-    function createPromiseResult(val: boolean){
+    function createPromiseResult(val: boolean): Promise<boolean>{
         return new Promise((resolve, reject) => {
             setTimeout(() => {
               resolve(val);
             });
           });
     }
-    function delay (ms: number) {
+    function delay (ms: number){
         return new Promise((resolve,reject) => setTimeout(resolve,ms));
     }
 
-    async function fillAnotherOne(i: number, j: number, prev_grid: number[]) {
+    async function fillAnotherOne(i: number, j: number, prev_grid: number[]) : Promise<boolean> {
         const index = (i * 9) + j
         if (index == 81) {
             return createPromiseResult(true)
@@ -97,7 +97,7 @@ export default function Grid() {
                 if(!can_be_added){
                     continue
                 }
-                await delay(5);
+                await delay(20);
                 var grid = [...prev_grid]
                 grid[index] = num
                 setNumsGrid(grid)
@@ -140,16 +140,19 @@ export default function Grid() {
     return (<div>
         <h1 className={`title ${status}_title`}>{status}</h1>
         {[...Array(GRID_ROW_LENGTH)].map((x, i) =>
-            <div>
+            <div className="grid_content">
                 {[...Array(GRID_COL_LENGTH)].map((xy, j) =>
                     <GridNode init_value={numsGrid[(i * 9) + j]} row={i} col={j} changeValue={changeValue} />)}
             </div>)}
-        <button className="button" onClick={onSolveHandler}>
+            <div className='buttons_container'>
+            <button className="button" onClick={onSolveHandler}>
             SOLVE
         </button>
         <button className="button" onClick={onClearClickHandler}>
             CLEAR
         </button>
+            </div>
+        
     </div>
     )
 
